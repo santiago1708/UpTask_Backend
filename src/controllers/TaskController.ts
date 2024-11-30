@@ -24,22 +24,40 @@ export class TaskController {
     }
     static getTaskById = async (req: Request, res: Response) => {
         try {
-            const { taskId } = req.params
-            const task = await Task.findById(taskId)
-            if (!task) {
-                const error = new Error('Tarea no encontrada')
-                res.status(404).json({ error: error.message })
-                return
-            }
-            
-            if (task.project.toString() !== req.project.id) {
-                const error = new Error('No tienes permisos para ver esta tarea')
-                res.status(400).json({ error: error.message })
-                return
-            }
-            res.json(task)
+            res.json(req.task)
         } catch (error) {
             res.status(500).json({ Error: 'hubo un error' })
         }
     }
+    static updateTask = async (req: Request, res: Response) => {
+        try {
+            req.task.name = req.body.name
+            req.task.description = req.body.description
+            await req.task.save()
+            res.json('Tarea actualizada correctamente')
+        } catch (error) {
+            res.status(500).json({ Error: 'hubo un error' })
+        }
+    }
+    static deleteTask = async (req: Request, res: Response) => {
+        try {
+            req.project.tasks = req.project.tasks.filter(task => task.toString() !== req.task.id.toString())
+            await Promise.allSettled([req.task.deleteOne(), req.project.save()])
+            res.json('Tarea actualizada correctamente')
+        } catch (error) {
+            res.status(500).json({ Error: 'hubo un error' })
+        }
+    }
+    static updateStatus = async (req: Request, res: Response) => {
+        try {
+            const { status } = req.body
+            req.task.status = status
+            await req.task.save()
+            res.json('Tarea actualizada correctamente')
+        } catch (error) {
+            res.status(500).json({ Error: 'hubo un error' })
+        }
+    }
+
+
 }
