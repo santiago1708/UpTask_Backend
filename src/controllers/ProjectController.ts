@@ -8,8 +8,7 @@ export class ProjectController {
             await project.save()
             res.send('proyecto creado correctamente')
         } catch (error) {
-            console.log(error);
-
+            console.log(error)
         }
     }
     static getAllProjects = async (req: Request, res: Response) => {
