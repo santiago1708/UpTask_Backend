@@ -8,7 +8,7 @@ export interface IAuth extends Document {
     confirmed: boolean
 }
 
-const authSchema = new Schema({
+const authSchema : Schema = new Schema({
     email: {
         type: String,
         required: true,
