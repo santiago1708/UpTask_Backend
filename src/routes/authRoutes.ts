@@ -11,7 +11,7 @@ router.post('/create-account',
     body('password')
         .notEmpty().withMessage('La contraseña no puede ir vacio')
         .isLength({ min: 8 }).withMessage('El password es muy corto, minimo 8 caracteres'),
-    body('confirmPassword')
+    body('password_confirmation')
         .custom((value, { req }) => {
             if (value !== req.body.password) {
                 throw new Error('Las contraseñas no coinciden')
@@ -37,6 +37,12 @@ router.post('/login',
         .notEmpty().withMessage('La contraseña no puede ir vacio'),
     handleInputErrors,
     AuthController.login
+)
+router.post('/request-code',
+    body('email')
+        .isEmail().withMessage('Email no valido'),
+    handleInputErrors,
+    AuthController.requestConfirmationCode
 )
 
 export default router
