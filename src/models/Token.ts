@@ -5,7 +5,7 @@ import moongose, { Schema, Document, Types } from 'mongoose'
 export interface IToken extends Document {
     token: string
     auth: Types.ObjectId
-    createdAt: Date
+    expiresAt: Date
 }
 
 const tokenSchema : Schema = new Schema({
@@ -17,9 +17,9 @@ const tokenSchema : Schema = new Schema({
         type: Types.ObjectId,
         ref: 'Auth'
     },
-    createdAt: {
+    expiresAt: {
         type: Date,
-        default: Date.now(),
+        default: () => Date.now(),
         expires: "10m"
     }
 })
