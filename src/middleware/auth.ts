@@ -22,16 +22,15 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         if (typeof decoded === 'object' && decoded.id) {
-            const user = await Auth.findById(decoded.id).select('_id name email')
-            if(user) {
+            const user = await Auth.findById(decoded.id).select('_id name  ')
+            if (user) {
                 req.user = user
-            }else {
+                next()
+            } else {
                 res.status(500).json({ error: 'Token no valido' })
             }
         }
     } catch (error) {
         res.status(500).json({ error: 'Token no valido' })
     }
-
-    next()
 }

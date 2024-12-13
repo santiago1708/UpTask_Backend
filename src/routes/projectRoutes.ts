@@ -9,8 +9,9 @@ import { authenticate } from '../middleware/auth'
 
 const router = Router()
 
+
+router.use(authenticate)
 router.post('/',
-    authenticate,
     body('projectName')
         .notEmpty().withMessage('El nombre del proyecto es Obligatorio'),
     body('clientName')
@@ -69,9 +70,9 @@ router.get('/:projectId/tasks/:taskId',
 router.put('/:projectId/tasks/:taskId',
     param('taskId').isMongoId().withMessage('ID no valido'),
     body('name')
-    .notEmpty().withMessage('El nombre de la tarea es Obligatorio'),
+        .notEmpty().withMessage('El nombre de la tarea es Obligatorio'),
     body('description')
-    .notEmpty().withMessage('La descripcion de la  es Obligatorio'),
+        .notEmpty().withMessage('La descripcion de la  es Obligatorio'),
     handleInputErrors,
     TaskController.updateTask
 )

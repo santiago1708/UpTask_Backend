@@ -18,7 +18,11 @@ export class ProjectController {
     }
     static getAllProjects = async (req: Request, res: Response) => {
         try {
-            const projects = await Project.find({})
+            const projects = await Project.find({
+                $or: [
+                    {manager: {$in: req.user.id}}
+                ]
+            })
             res.json(projects)
         } catch (error) {
             console.log(error);
@@ -34,6 +38,11 @@ export class ProjectController {
                 res.status(404).json({error: error.message})
                 return
             }
+            if(project.manager.toString() !== req.user.id.toString()) {
+                const error = new Error('No tienes permisos para acceder a este proyecto')
+                res.status(404).json({error: error.message})
+                return
+            }
             res.json(project)
         } catch (error) {
             console.log(error);
@@ -45,6 +54,11 @@ export class ProjectController {
             const project = await Project.findById(id)
             if(!project) {
                 const error = new Error('Proyecto no encontrado')
+                res.status(404).json({error: error.message})
+                return
+            }
+            if(project.manager.toString() !== req.user.id.toString()) {
+                const error = new Error('Solo el manager puede actualizar el proyecto')
                 res.status(404).json({error: error.message})
                 return
             }
@@ -66,7 +80,11 @@ export class ProjectController {
                 res.status(404).json({error: error.message})
                 return
             }
-            
+            if(project.manager.toString() !== req.user.id.toString()) {
+                const error = new Error('Solo el manager puede eliminar el proyecto')
+                res.status(404).json({error: error.message})
+                return
+            }
             await project.deleteOne()
             res.send('proyecto eliminado')
         } catch (error) {
