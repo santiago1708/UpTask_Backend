@@ -1,4 +1,4 @@
-import mongoose, {Schema, Document, PopulatedDoc, Types} from "mongoose";
+import mongoose, { Schema, Document, PopulatedDoc, Types } from "mongoose";
 import { ITask } from "./Task";
 import { IAuth } from "./Auth";
 
@@ -9,6 +9,7 @@ export interface IProject extends Document {
     description: string
     tasks: PopulatedDoc<ITask & Document>[]
     manager: PopulatedDoc<IAuth & Document>
+    team: PopulatedDoc<IAuth & Document>[]
 }
 /* Mongoose */
 const ProjectSchema: Schema = new Schema({
@@ -36,8 +37,14 @@ const ProjectSchema: Schema = new Schema({
     manager: {
         type: Types.ObjectId,
         ref: 'Auth'
-    }
-}, {timestamps: true})
+    },
+    team: [
+        {
+            type: Types.ObjectId,
+            ref: 'Auth'
+        }
+    ]
+}, { timestamps: true })
 
 const Project = mongoose.model<IProject>('Project', ProjectSchema)
 export default Project;

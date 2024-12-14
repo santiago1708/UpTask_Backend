@@ -6,6 +6,7 @@ import { TaskController } from '../controllers/TaskController'
 import { projectExist } from '../middleware/project'
 import { taskBelongsToProject, taskExist } from '../middleware/task'
 import { authenticate } from '../middleware/auth'
+import { TeamController } from '../controllers/TeamController'
 
 const router = Router()
 
@@ -88,5 +89,12 @@ router.post('/:projectId/tasks/:taskId/status',
         .notEmpty().withMessage('El estado es obligatorio'),
     handleInputErrors,
     TaskController.updateStatus
+)
+
+router.post('/:projectId/team/find',
+    body('email')
+        .isEmail().toLowerCase().withMessage('Email no valido'),
+    handleInputErrors,
+    TeamController.findMemberByEmail
 )
 export default router
