@@ -42,7 +42,7 @@ export const TaskSchema: Schema = new Schema({
     },
     completedBy: {
         type: Types.ObjectId,
-        ref: 'User',
+        ref: 'Auth',
         default: null
     }
 }, { timestamps: true })
