@@ -7,7 +7,7 @@ export interface INote extends Document {
 }
 
 const noteSchema: Schema = new Schema({
-    constent: {
+    content: {
         type: String,
         required: true
     },
