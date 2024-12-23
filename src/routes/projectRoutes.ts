@@ -127,5 +127,14 @@ router.post('/:projectId/tasks/:taskId/notes',
     handleInputErrors,
     NoteController.createNote
 )
+router.get('/:projectId/tasks/:taskId/notes',
+    NoteController.getTaskNote
+)
+router.delete('/:projectId/tasks/:taskId/notes/:noteId',
+    param('noteId')
+        .isMongoId().withMessage('ID no valido'),
+    handleInputErrors,
+    NoteController.deleteNote
+)
 
 export default router
