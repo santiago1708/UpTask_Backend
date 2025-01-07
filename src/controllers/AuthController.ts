@@ -212,9 +212,9 @@ export class AuthController {
     }
     static updateProfile = async (req: Request, res: Response) => {
         const { name, email } = req.body
-        const userExists = await Auth.findOne({email})
+        const userExists = await Auth.findOne({ email })
 
-        if(userExists && userExists.id.toString() !== req.user.id.toString()) {
+        if (userExists && userExists.id.toString() !== req.user.id.toString()) {
             const error = new Error('El correo ya existe')
             res.status(409).json({ error: error.message })
             return
@@ -226,6 +226,25 @@ export class AuthController {
         try {
             await req.user.save()
             res.send('El perfil se modifico correctamente')
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' })
+        }
+    }
+    static updateCurrentUserPassword = async (req: Request, res: Response) => {
+        const { curent_password, password } = req.body
+
+        const user = await Auth.findById(req.user.id)
+        const isPasswordCorrect = await comparePasswords(curent_password, user.password)
+        if (!isPasswordCorrect) {
+            const error = new Error('El password es incorrecto')
+            res.status(401).json({ error: error.message })
+            return
+        }
+
+        try {
+            user.password = await hashPassword(password)
+            await user.save()
+            res.send('El password se modifico correctamente')
         } catch (error) {
             res.status(500).json({ error: 'Hubo un error' })
         }
