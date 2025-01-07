@@ -99,7 +99,7 @@ export class AuthController {
                 return
             }
 
-            const token = generateJWT({id: user.id})
+            const token = generateJWT({ id: user.id })
 
             res.send(token)
         } catch (error) {
@@ -209,5 +209,25 @@ export class AuthController {
     static user = async (req: Request, res: Response) => {
         res.json(req.user)
         return
+    }
+    static updateProfile = async (req: Request, res: Response) => {
+        const { name, email } = req.body
+        const userExists = await Auth.findOne({email})
+
+        if(userExists && userExists.id.toString() !== req.user.id.toString()) {
+            const error = new Error('El correo ya existe')
+            res.status(409).json({ error: error.message })
+            return
+        }
+
+        req.user.name = name
+        req.user.email = email
+
+        try {
+            await req.user.save()
+            res.send('El perfil se modifico correctamente')
+        } catch (error) {
+            res.status(500).json({ error: 'Hubo un error' })
+        }
     }
 }
