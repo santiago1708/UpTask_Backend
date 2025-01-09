@@ -93,7 +93,7 @@ router.put('/profile',
 
 router.post('/update-password',
     authenticate,
-    body('curent_password')
+    body('current_password')
         .notEmpty().withMessage('El password actual no puede ir vacio'),
     body('password')
         .notEmpty().withMessage('La contraseña no puede ir vacio')
